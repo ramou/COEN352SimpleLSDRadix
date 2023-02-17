@@ -9,14 +9,14 @@ public class RadixSort {
 		// TODO Auto-generated method stub
 		final int SIZE = 10000000;
 		
-		int[] input = new int[SIZE];
+		long[] input = new long[SIZE];
 		long seed = System.currentTimeMillis();
 		System.out.println(seed);
 		Random r = new Random(seed);
 		for(int i = 0; i < input.length; ++i) {
-			input[i] = r.nextInt(0, Integer.MAX_VALUE);
+			input[i] = r.nextLong(0, Long.MAX_VALUE);
 		}
-		int[] control = input.clone();
+		long[] control = input.clone();
 		try {
 
 			
@@ -46,13 +46,11 @@ public class RadixSort {
 		
 	}
 
-	
-	
-	
-    public static void insertionSort(int array[]) {  
+
+    public static void insertionSort(long array[]) {  
         int n = array.length;  
         for (int j = 1; j < n; j++) {  
-            int key = array[j];  
+            long key = array[j];  
             int i = j-1;  
             while ( (i > -1) && ( array [i] > key ) ) {  
                 array [i+1] = array [i];  
@@ -67,15 +65,15 @@ public class RadixSort {
 	}
 	
 	//This is a Least Significant Digit Radix Sort
-	public static void rsort(int[] arr) {
-		int[] buffer = new int[arr.length];
+	public static void rsort(long[] arr) {
+		long[] buffer = new long[arr.length];
 		int[] buckets = new int[257];
 		
 		zeroCounters(buckets);
 		
-		for(int digit = 0; digit < 4; ++digit) {
+		for(int digit = 0; digit < 8; ++digit) {
 			//Count the digits
-			for(int i = 0; i < arr.length; ++i) buckets[1+((arr[i] >> digit*8) & 255)]++;		
+			for(int i = 0; i < arr.length; ++i) buckets[(int)(1+((arr[i] >> digit*8) & 255))]++;		
 			//System.out.println(Arrays.toString(buckets));
 			//Convert the digits to bucket offsets
 			for(int i = 1; i < 257; ++i) buckets[i] = buckets[i] + buckets[i-1];
@@ -84,12 +82,12 @@ public class RadixSort {
 			//Copy into the corresponding buffer
 			for(int i = 0; i < arr.length; ++i) {
 				//System.out.println(buckets[(arr[i] >> (digit*8)) & 255]);
-				buffer[buckets[(arr[i] >> (digit*8)) & 255]] = arr[i];
-				buckets[(arr[i] >> (digit*8)) & 255]++;
+				buffer[buckets[(int)((arr[i] >> (digit*8)) & 255)]] = arr[i];
+				buckets[(int)((arr[i] >> (digit*8)) & 255)]++;
 			}
 			
 			//swap arrays and zero buckets...
-			int[] temp = buffer;
+			long[] temp = buffer;
 			buffer = arr;
 			arr = temp;
 			zeroCounters(buckets);
@@ -97,4 +95,34 @@ public class RadixSort {
 		
 	}
 	
+	public static void divrsort(long[] arr) {
+		long[] buffer = new long[arr.length];
+		int[] buckets = new int[257];
+		
+		zeroCounters(buckets);
+		
+		for(int digit = 4; digit < 8; ++digit) {
+			//Count the digits
+			for(int i = 0; i < arr.length; ++i) buckets[(int)(1+((arr[i] >> digit*8) & 255))]++;		
+			//System.out.println(Arrays.toString(buckets));
+			//Convert the digits to bucket offsets
+			for(int i = 1; i < 257; ++i) buckets[i] = buckets[i] + buckets[i-1];
+			//System.out.println(Arrays.toString(buckets));
+			
+			//Copy into the corresponding buffer
+			for(int i = 0; i < arr.length; ++i) {
+				//System.out.println(buckets[(arr[i] >> (digit*8)) & 255]);
+				buffer[buckets[(int)((arr[i] >> (digit*8)) & 255)]] = arr[i];
+				buckets[(int)((arr[i] >> (digit*8)) & 255)]++;
+			}
+			
+			//swap arrays and zero buckets...
+			long[] temp = buffer;
+			buffer = arr;
+			arr = temp;
+			zeroCounters(buckets);
+		}
+		insertionSort(arr);
+		
+	}
 }
